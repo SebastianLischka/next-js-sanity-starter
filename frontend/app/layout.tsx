@@ -4,11 +4,32 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { getDrFlexScriptUrl, isDrFlexEnabled } from "@/lib/dr-flex";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
+function getMetadataBase(): URL | undefined {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) return undefined;
+  try {
+    return new URL(siteUrl);
+  } catch {
+    return undefined;
+  }
+}
+
+const metadataBase = getMetadataBase();
+const openGraphImages = metadataBase
+  ? [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ]
+  : undefined;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+  metadataBase,
   icons: {
     icon: "/favicon.ico",
   },
@@ -17,13 +38,7 @@ export const metadata: Metadata = {
     default: "Sanity Next.js Website | Schema UI",
   },
   openGraph: {
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-        width: 1200,
-        height: 630,
-      },
-    ],
+    images: openGraphImages,
     locale: "en_US",
     type: "website",
   },
@@ -36,6 +51,9 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
+const drFlexScriptUrl =
+  isDrFlexEnabled() && getDrFlexScriptUrl() ? getDrFlexScriptUrl() : null;
+
 export default function RootLayout({
   children,
 }: {
@@ -43,6 +61,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {drFlexScriptUrl && <script src={drFlexScriptUrl} />}
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased overscroll-none",
