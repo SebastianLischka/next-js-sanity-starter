@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getDrFlexScriptUrl, isDrFlexEnabled } from "@/lib/dr-flex";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 function getMetadataBase(): URL | undefined {
@@ -79,6 +80,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster position="top-center" richColors />
+        <SpeedInsights />
       </body>
     </html>
   );
