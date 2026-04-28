@@ -7,9 +7,20 @@ import { Toaster } from "@/components/ui/sonner";
 import { getDrFlexScriptUrl, isDrFlexEnabled } from "@/lib/dr-flex";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
+function getMetadataBase(): URL | undefined {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) return undefined;
+  try {
+    return new URL(siteUrl);
+  } catch {
+    return undefined;
+  }
+}
+
+const metadataBase = getMetadataBase();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+  metadataBase,
   icons: {
     icon: "/favicon.ico",
   },
@@ -20,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
+        url: "/images/og-image.jpg",
         width: 1200,
         height: 630,
       },
