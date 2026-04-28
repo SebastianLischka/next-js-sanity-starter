@@ -18,6 +18,15 @@ function getMetadataBase(): URL | undefined {
 }
 
 const metadataBase = getMetadataBase();
+const openGraphImages = metadataBase
+  ? [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ]
+  : undefined;
 
 export const metadata: Metadata = {
   metadataBase,
@@ -29,13 +38,7 @@ export const metadata: Metadata = {
     default: "Sanity Next.js Website | Schema UI",
   },
   openGraph: {
-    images: [
-      {
-        url: "/images/og-image.jpg",
-        width: 1200,
-        height: 630,
-      },
-    ],
+    images: openGraphImages,
     locale: "en_US",
     type: "website",
   },
