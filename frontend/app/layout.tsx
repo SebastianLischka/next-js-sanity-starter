@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getDrFlexScriptUrl, isDrFlexEnabled } from "@/lib/dr-flex";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 function getMetadataBase(): URL | undefined {
@@ -54,6 +53,17 @@ const fontSans = FontSans({
 
 const drFlexScriptUrl =
   isDrFlexEnabled() && getDrFlexScriptUrl() ? getDrFlexScriptUrl() : null;
+const isVercelSpeedInsightsEnabled =
+  process.env.NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS_ENABLED === "true";
+
+async function VercelSpeedInsights() {
+  if (!isVercelSpeedInsightsEnabled) {
+    return null;
+  }
+
+  const { SpeedInsights } = await import("@vercel/speed-insights/next");
+  return <SpeedInsights />;
+}
 
 export default function RootLayout({
   children,
@@ -80,7 +90,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster position="top-center" richColors />
-        <SpeedInsights />
+        <VercelSpeedInsights />
       </body>
     </html>
   );
