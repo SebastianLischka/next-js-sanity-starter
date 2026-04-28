@@ -53,6 +53,17 @@ const fontSans = FontSans({
 
 const drFlexScriptUrl =
   isDrFlexEnabled() && getDrFlexScriptUrl() ? getDrFlexScriptUrl() : null;
+const isVercelSpeedInsightsEnabled =
+  process.env.NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS_ENABLED === "true";
+
+async function VercelSpeedInsights() {
+  if (!isVercelSpeedInsightsEnabled) {
+    return null;
+  }
+
+  const { SpeedInsights } = await import("@vercel/speed-insights/next");
+  return <SpeedInsights />;
+}
 
 export default function RootLayout({
   children,
@@ -79,6 +90,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster position="top-center" richColors />
+        <VercelSpeedInsights />
       </body>
     </html>
   );
