@@ -8,6 +8,8 @@ import { resolve } from "./presentation/resolve";
 import { structure } from "./structure";
 import { defaultDocumentNode } from "./defaultDocumentNode";
 import { codeInput } from "@sanity/code-input";
+import { documentInternationalization } from "@sanity/document-internationalization";
+import { DEFAULT_LANGUAGE, DEFAULT_LANGUAGE_TITLE } from "./lib/i18n-config";
 
 // Define the actions that should be available for singleton documents
 const singletonActions = new Set([
@@ -26,6 +28,11 @@ const apiVersion = process.env.SANITY_STUDIO_API_VERSION || "2026-03-23";
 
 const SANITY_STUDIO_PREVIEW_URL =
   process.env.SANITY_STUDIO_PREVIEW_URL || "http://localhost:3000";
+
+type SupportedLanguage = {
+  id?: string;
+  title?: string;
+};
 
 export default defineConfig({
   title: "Schema UI: Starter",
@@ -48,6 +55,32 @@ export default defineConfig({
   },
   plugins: [
     structureTool({ structure, defaultDocumentNode }),
+    documentInternationalization({
+      schemaTypes: ["page", "post"],
+      languageField: "language",
+      supportedLanguages: async (client) => {
+        const settings = await client.fetch<{
+          supportedLanguages?: SupportedLanguage[];
+        }>(`*[_type == "settings"][0]{supportedLanguages[]{id,title}}`);
+
+        const languages =
+          settings?.supportedLanguages
+            ?.map((locale) => ({
+              id: locale.id?.trim().toLowerCase(),
+              title: locale.title?.trim(),
+            }))
+            .filter(
+              (locale): locale is { id: string; title: string } =>
+                Boolean(locale.id && locale.title),
+            ) ?? [];
+
+        if (languages.length === 0) {
+          return [{ id: DEFAULT_LANGUAGE, title: DEFAULT_LANGUAGE_TITLE }];
+        }
+
+        return languages;
+      },
+    }),
     presentationTool({
       previewUrl: {
         origin: SANITY_STUDIO_PREVIEW_URL,

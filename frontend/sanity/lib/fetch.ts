@@ -16,24 +16,32 @@ import {
   NAVIGATION_QUERY_RESULT,
   SETTINGS_QUERY_RESULT,
 } from "@/sanity.types";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 export const fetchSanityPageBySlug = async ({
   slug,
+  language,
 }: {
   slug: string;
+  language?: string;
 }): Promise<PAGE_QUERY_RESULT> => {
   const { data } = await sanityFetch({
     query: PAGE_QUERY,
-    params: { slug },
+    params: { slug, language: language || DEFAULT_LOCALE, defaultLanguage: DEFAULT_LOCALE },
   });
 
   return data;
 };
 
 export const fetchSanityPagesStaticParams =
-  async (): Promise<PAGES_SLUGS_QUERY_RESULT> => {
+  async ({
+    language,
+  }: {
+    language?: string;
+  } = {}): Promise<PAGES_SLUGS_QUERY_RESULT> => {
     const { data } = await sanityFetch({
       query: PAGES_SLUGS_QUERY,
+      params: { language: language || DEFAULT_LOCALE, defaultLanguage: DEFAULT_LOCALE },
       perspective: "published",
       stega: false,
     });
@@ -41,9 +49,14 @@ export const fetchSanityPagesStaticParams =
     return data;
   };
 
-export const fetchSanityPosts = async (): Promise<POSTS_QUERY_RESULT> => {
+export const fetchSanityPosts = async ({
+  language,
+}: {
+  language?: string;
+} = {}): Promise<POSTS_QUERY_RESULT> => {
   const { data } = await sanityFetch({
     query: POSTS_QUERY,
+    params: { language: language || DEFAULT_LOCALE, defaultLanguage: DEFAULT_LOCALE },
   });
 
   return data;
@@ -51,21 +64,28 @@ export const fetchSanityPosts = async (): Promise<POSTS_QUERY_RESULT> => {
 
 export const fetchSanityPostBySlug = async ({
   slug,
+  language,
 }: {
   slug: string;
+  language?: string;
 }): Promise<POST_QUERY_RESULT> => {
   const { data } = await sanityFetch({
     query: POST_QUERY,
-    params: { slug },
+    params: { slug, language: language || DEFAULT_LOCALE, defaultLanguage: DEFAULT_LOCALE },
   });
 
   return data;
 };
 
 export const fetchSanityPostsStaticParams =
-  async (): Promise<POSTS_SLUGS_QUERY_RESULT> => {
+  async ({
+    language,
+  }: {
+    language?: string;
+  } = {}): Promise<POSTS_SLUGS_QUERY_RESULT> => {
     const { data } = await sanityFetch({
       query: POSTS_SLUGS_QUERY,
+      params: { language: language || DEFAULT_LOCALE, defaultLanguage: DEFAULT_LOCALE },
       perspective: "published",
       stega: false,
     });

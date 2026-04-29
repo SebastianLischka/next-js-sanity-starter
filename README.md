@@ -305,6 +305,7 @@ All environment variables and their descriptions:
 - `NEXT_PUBLIC_SANITY_API_VERSION` - your Sanity API version. You don't have to use specific dates, any past or present date is valid, and today's date will always give you the latest version - no need to check release history. For example: YYYY-MM-DD.
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` - your Sanity project ID. For example, abc12345.
 - `NEXT_PUBLIC_SANITY_DATASET` - your Sanity dataset name. For example, production.
+- `NEXT_PUBLIC_I18N_DEFAULT_LOCALE` - default locale for routing/metadata fallbacks in Next.js (2-letter lowercase code, for example `de`).
 - `SANITY_API_READ_TOKEN` - your Sanity read token for Next.js to fetch data.
 - `RESEND_API_KEY` - your RESEND api key for the newsletter form.
 - `RESEND_AUDIENCE_ID` - your RESEND audience id for the newsletter form to store contacts.
@@ -314,6 +315,8 @@ All environment variables and their descriptions:
 - `SANITY_STUDIO_PREVIEW_URL` - your Next.js site url for preview. For example, `https://yourwebsite.com` or `http://localhost:3000` locally, without trailing slash. Used for Draft Mode in Presentation Tool or iframe preview.
 - `SANITY_STUDIO_PROJECT_ID` - your Sanity project ID. For example, abc12345.
 - `SANITY_STUDIO_DATASET` - your Sanity dataset name. For example, production.
+- `SANITY_STUDIO_DEFAULT_LANGUAGE` - default locale used by Studio i18n setup and bootstrap scripts (2-letter lowercase code, for example `de`).
+- `SANITY_STUDIO_DEFAULT_LANGUAGE_TITLE` - editor-facing label for the default language (for example `Deutsch`).
 - `SANITY_STUDIO_HOSTNAME` - your Sanity Studio hostname for `sanity deploy` (unique on `.sanity.studio`).
 - `SANITY_STUDIO_API_VERSION` - your Sanity API version (same guidance as above). For example: YYYY-MM-DD.
 - `SANITY_AUTH_TOKEN` - your Sanity auth token for Studio deploy via GitHub Actions. Generate in Sanity Manage → API → Tokens with deploy permission.

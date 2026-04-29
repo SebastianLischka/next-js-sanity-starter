@@ -3,6 +3,9 @@ import PostCard from "@/components/ui/post-card";
 import Link from "next/link";
 import { fetchSanityPosts } from "@/sanity/lib/fetch";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { localizeHref } from "@/lib/i18n-routing";
+import { getI18nConfig } from "@/lib/i18n";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 type AllPostsProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -12,8 +15,12 @@ type AllPostsProps = Extract<
 export default async function AllPosts({
   padding,
   colorVariant,
-}: AllPostsProps) {
-  const posts = await fetchSanityPosts();
+  lang = DEFAULT_LOCALE,
+}: AllPostsProps & { lang?: string }) {
+  const [{ locales, needsLocalePrefix }, posts] = await Promise.all([
+    getI18nConfig(),
+    fetchSanityPosts({ language: lang }),
+  ]);
 
   return (
     <SectionContainer color={colorVariant} padding={padding}>
@@ -22,7 +29,12 @@ export default async function AllPosts({
           <Link
             key={post?.slug?.current}
             className="flex w-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            href={`/blog/${post?.slug?.current}`}
+            href={localizeHref({
+              href: `/blog/${post?.slug?.current}`,
+              locale: lang,
+              locales,
+              needsLocalePrefix,
+            })}
           >
             <PostCard
               title={post?.title ?? ""}

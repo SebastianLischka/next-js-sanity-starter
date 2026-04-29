@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
 import { FileText } from "lucide-react";
 import meta from "../blocks/shared/meta";
+import { isUniqueLanguageSlug } from "../../lib/is-unique-language-slug";
+import { DEFAULT_LANGUAGE } from "../../lib/i18n-config";
 
 export default defineType({
   name: "post",
@@ -37,8 +39,20 @@ export default defineType({
       options: {
         source: "title",
         maxLength: 96,
+        isUnique: isUniqueLanguageSlug,
       },
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "language",
+      type: "string",
+      group: "settings",
+      readOnly: true,
+      initialValue: DEFAULT_LANGUAGE,
+      validation: (rule) =>
+        rule.required().error("Language is required for translated posts."),
+      description:
+        "Managed by document internationalization. Do not edit manually.",
     }),
     defineField({
       name: "excerpt",

@@ -14,15 +14,22 @@ import { useEffect, useState } from "react";
 import { AlignRight } from "lucide-react";
 import { SETTINGS_QUERY_RESULT, NAVIGATION_QUERY_RESULT } from "@/sanity.types";
 import ActionLinkButton from "@/components/blocks/shared/action-link-button";
+import { localizeHref } from "@/lib/i18n-routing";
 
 type SanityLink = NonNullable<NAVIGATION_QUERY_RESULT[0]["links"]>[number];
 
 export default function MobileNav({
   navigation,
   settings,
+  locale,
+  locales,
+  needsLocalePrefix,
 }: {
   navigation: NAVIGATION_QUERY_RESULT;
   settings: SETTINGS_QUERY_RESULT;
+  locale: string;
+  locales: string[];
+  needsLocalePrefix: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -62,7 +69,12 @@ export default function MobileNav({
                   <ActionLinkButton
                     title={navItem.title}
                     onClick={() => setOpen(false)}
-                    href={navItem.href || "#"}
+                    href={localizeHref({
+                      href: navItem.href || "#",
+                      locale,
+                      locales,
+                      needsLocalePrefix,
+                    })}
                     target={navItem.target}
                     action={navItem.action}
                     variant={navItem.buttonVariant || "default"}

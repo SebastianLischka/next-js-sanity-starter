@@ -19,7 +19,8 @@ import { formNewsletterQuery } from "./forms/newsletter";
 import { allPostsQuery } from "./all-posts";
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug][0]{
+  *[_type == "page" && slug.current == $slug && coalesce(language, $defaultLanguage) == $language][0]{
+    "language": coalesce(language, $defaultLanguage),
     blocks[]{
       ${hero1Query},
       ${hero2Query},
@@ -43,4 +44,4 @@ export const PAGE_QUERY = groq`
   }
 `;
 
-export const PAGES_SLUGS_QUERY = groq`*[_type == "page" && defined(slug)]{slug}`;
+export const PAGES_SLUGS_QUERY = groq`*[_type == "page" && defined(slug) && coalesce(language, $defaultLanguage) == $language]{slug}`;

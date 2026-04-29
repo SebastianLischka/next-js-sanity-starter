@@ -3,6 +3,7 @@ import {
   defineDocuments,
   PresentationPluginOptions,
 } from "sanity/presentation";
+import { DEFAULT_LANGUAGE } from "../lib/i18n-config";
 
 export const resolve: PresentationPluginOptions["resolve"] = {
   locations: {
@@ -11,14 +12,18 @@ export const resolve: PresentationPluginOptions["resolve"] = {
       select: {
         title: "title",
         slug: "slug.current",
+        language: "language",
       },
       resolve: (doc) => ({
         locations: [
           {
             title: doc?.title || "Untitled",
-            href: `/blog/${doc?.slug}`,
+            href: `/${doc?.language || DEFAULT_LANGUAGE}/blog/${doc?.slug}`,
           },
-          { title: "Blog", href: `/blog` },
+          {
+            title: "Blog",
+            href: `/${doc?.language || DEFAULT_LANGUAGE}/blog`,
+          },
         ],
       }),
     }),
@@ -26,15 +31,27 @@ export const resolve: PresentationPluginOptions["resolve"] = {
   mainDocuments: defineDocuments([
     {
       route: "/",
-      filter: `_type == 'page' && slug.current == 'index'`,
+      filter: `_type == 'page' && slug.current == 'index' && coalesce(language, '${DEFAULT_LANGUAGE}') == '${DEFAULT_LANGUAGE}'`,
+    },
+    {
+      route: "/:lang",
+      filter: `_type == 'page' && slug.current == 'index' && coalesce(language, '${DEFAULT_LANGUAGE}') == $lang`,
     },
     {
       route: "/:slug",
-      filter: `_type == 'page' && slug.current == $slug`,
+      filter: `_type == 'page' && slug.current == $slug && coalesce(language, '${DEFAULT_LANGUAGE}') == '${DEFAULT_LANGUAGE}'`,
+    },
+    {
+      route: "/:lang/:slug",
+      filter: `_type == 'page' && slug.current == $slug && coalesce(language, '${DEFAULT_LANGUAGE}') == $lang`,
     },
     {
       route: "/blog/:slug",
-      filter: `_type == 'post' && slug.current == $slug`,
+      filter: `_type == 'post' && slug.current == $slug && coalesce(language, '${DEFAULT_LANGUAGE}') == '${DEFAULT_LANGUAGE}'`,
+    },
+    {
+      route: "/:lang/blog/:slug",
+      filter: `_type == 'post' && slug.current == $slug && coalesce(language, '${DEFAULT_LANGUAGE}') == $lang`,
     },
   ]),
 };

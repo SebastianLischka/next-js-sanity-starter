@@ -2,6 +2,8 @@ import { defineField, defineType } from "sanity";
 import { Files } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import meta from "../blocks/shared/meta";
+import { isUniqueLanguageSlug } from "../../lib/is-unique-language-slug";
+import { DEFAULT_LANGUAGE } from "../../lib/i18n-config";
 
 export default defineType({
   name: "page",
@@ -32,8 +34,20 @@ export default defineType({
       options: {
         source: "title",
         maxLength: 96,
+        isUnique: isUniqueLanguageSlug,
       },
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "language",
+      type: "string",
+      group: "settings",
+      readOnly: true,
+      initialValue: DEFAULT_LANGUAGE,
+      validation: (rule) =>
+        rule.required().error("Language is required for translated pages."),
+      description:
+        "Managed by document internationalization. Do not edit manually.",
     }),
     defineField({
       name: "blocks",

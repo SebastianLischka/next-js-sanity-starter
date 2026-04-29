@@ -16,6 +16,7 @@ import Footer2 from "@/components/blocks/footer/footer-2";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
@@ -39,7 +40,13 @@ const componentMap: Record<string, React.ComponentType<any>> = {
   "all-posts": AllPosts,
 };
 
-export default function Blocks({ blocks }: { blocks: Block[] }) {
+export default function Blocks({
+  blocks,
+  lang = DEFAULT_LOCALE,
+}: {
+  blocks: Block[];
+  lang?: string;
+}) {
   return (
     <>
       {blocks?.map((block) => {
@@ -51,7 +58,7 @@ export default function Blocks({ blocks }: { blocks: Block[] }) {
           );
           return <div data-type={block._type} key={block._key} />;
         }
-        return <Component {...(block as any)} key={block._key} />;
+        return <Component {...(block as any)} lang={lang} key={block._key} />;
       })}
     </>
   );

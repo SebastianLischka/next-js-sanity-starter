@@ -6,7 +6,7 @@ import { POSTS_QUERY_RESULT } from "@/sanity.types";
 
 type PostCard = NonNullable<POSTS_QUERY_RESULT[number]>;
 
-interface PostCardProps extends Omit<PostCard, "slug"> {
+interface PostCardProps extends Omit<PostCard, "slug" | "language"> {
   className?: string;
 }
 

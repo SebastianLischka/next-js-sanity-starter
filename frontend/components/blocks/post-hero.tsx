@@ -3,8 +3,15 @@ import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { POST_QUERY_RESULT } from "@/sanity.types";
+import { localizeHref } from "@/lib/i18n-routing";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
+type PostHeroExtendedProps = PostHeroProps & {
+  lang?: string;
+  locales?: string[];
+  needsLocalePrefix?: boolean;
+};
 
 export default function PostHero({
   title,
@@ -12,7 +19,17 @@ export default function PostHero({
   image,
   slug,
   _createdAt,
-}: PostHeroProps) {
+  lang = DEFAULT_LOCALE,
+  locales = [DEFAULT_LOCALE],
+  needsLocalePrefix = false,
+}: PostHeroExtendedProps) {
+  const postPath = localizeHref({
+    href: `/blog/${slug?.current}`,
+    locale: lang,
+    locales,
+    needsLocalePrefix,
+  });
+
   return (
     <>
       {title && <h1 className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
@@ -60,7 +77,7 @@ export default function PostHero({
           <div className="flex gap-2">
             <a
               className="hover:opacity-70"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}${postPath}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share on Facebook"
@@ -81,7 +98,7 @@ export default function PostHero({
             </a>
             <a
               className="hover:opacity-70"
-              href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}${postPath}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share via email"

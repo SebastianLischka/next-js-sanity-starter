@@ -5,18 +5,36 @@ import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { fetchSanitySettings, fetchSanityNavigation } from "@/sanity/lib/fetch";
 import { NAVIGATION_QUERY_RESULT } from "@/sanity.types";
+import { getI18nConfig } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n-routing";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 type SanityLink = NonNullable<NAVIGATION_QUERY_RESULT[0]["links"]>[number];
 
-export default async function Footer() {
-  const settings = await fetchSanitySettings();
-  const navigation = await fetchSanityNavigation();
+export default async function Footer({
+  locale = DEFAULT_LOCALE,
+}: {
+  locale?: string;
+}) {
+  const [{ locales, needsLocalePrefix }, settings, navigation] =
+    await Promise.all([
+      getI18nConfig(),
+      fetchSanitySettings(),
+      fetchSanityNavigation(),
+    ]);
+
+  const homeHref = localizeHref({
+    href: "/",
+    locale,
+    locales,
+    needsLocalePrefix,
+  });
 
   return (
     <footer>
       <div className="dark:bg-background pb-5 xl:pb-5 dark:text-gray-300 text-center">
         <Link
-          href="/"
+          href={homeHref}
           className="inline-block text-center"
           aria-label="Home page"
         >
@@ -26,7 +44,12 @@ export default async function Footer() {
           {navigation[0]?.links?.map((navItem: SanityLink) => (
             <Link
               key={navItem._key}
-              href={navItem.href || "#"}
+              href={localizeHref({
+                href: navItem.href || "#",
+                locale,
+                locales,
+                needsLocalePrefix,
+              })}
               target={navItem.target ? "_blank" : undefined}
               rel={navItem.target ? "noopener noreferrer" : undefined}
               className={cn(

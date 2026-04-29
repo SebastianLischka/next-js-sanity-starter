@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getDrFlexScriptUrl, isDrFlexEnabled } from "@/lib/dr-flex";
+import { DEFAULT_LOCALE } from "@/config/i18n";
+import { toOpenGraphLocale } from "@/lib/i18n";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 function getMetadataBase(): URL | undefined {
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: openGraphImages,
-    locale: "en_US",
+    locale: toOpenGraphLocale(DEFAULT_LOCALE),
     type: "website",
   },
   robots: !isProduction ? "noindex, nofollow" : "index, follow",
@@ -71,7 +73,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={DEFAULT_LOCALE} suppressHydrationWarning>
       <head>
         {drFlexScriptUrl && <script src={drFlexScriptUrl} />}
       </head>

@@ -3,7 +3,8 @@ import { imageQuery } from "./shared/image";
 import { bodyQuery } from "./shared/body";
 import { metaQuery } from "./shared/meta";
 
-export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
+export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug && coalesce(language, $defaultLanguage) == $language][0]{
+    "language": coalesce(language, $defaultLanguage),
     title,
     slug,
     image{
@@ -36,7 +37,8 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
     ${metaQuery},
 }`;
 
-export const POSTS_QUERY = groq`*[_type == "post" && defined(slug)] | order(_createdAt desc){
+export const POSTS_QUERY = groq`*[_type == "post" && defined(slug) && coalesce(language, $defaultLanguage) == $language] | order(_createdAt desc){
+    "language": coalesce(language, $defaultLanguage),
     title,
     slug,
     excerpt,
@@ -45,4 +47,4 @@ export const POSTS_QUERY = groq`*[_type == "post" && defined(slug)] | order(_cre
     },
 }`;
 
-export const POSTS_SLUGS_QUERY = groq`*[_type == "post" && defined(slug)]{slug}`;
+export const POSTS_SLUGS_QUERY = groq`*[_type == "post" && defined(slug) && coalesce(language, $defaultLanguage) == $language]{slug}`;

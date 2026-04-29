@@ -14,6 +14,7 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+import { locale } from "./schemas/shared/locale";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import hero2 from "./schemas/blocks/hero/hero-2";
@@ -59,6 +60,7 @@ export const schemaTypes = [
   colorVariant,
   buttonVariant,
   sectionPadding,
+  locale,
   // blocks
   hero1,
   hero2,

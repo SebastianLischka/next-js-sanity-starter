@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Custom404 from "@/components/404";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 import type { Metadata } from "next";
 
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
 export default function NotFoundPage() {
   return (
     <>
-      <Header />
+      <Header locale={DEFAULT_LOCALE} />
       <Custom404 />
-      <Footer />
+      <Footer locale={DEFAULT_LOCALE} />
     </>
   );
 }
