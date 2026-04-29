@@ -8,6 +8,7 @@ import { getI18nConfig } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n-routing";
 import { DEFAULT_LOCALE } from "@/config/i18n";
 import LocaleSwitcher from "@/components/header/locale-switcher";
+import { Suspense } from "react";
 
 export default async function Header({
   locale = DEFAULT_LOCALE,
@@ -41,19 +42,23 @@ export default async function Header({
             needsLocalePrefix={needsLocalePrefix}
             navigation={navigation}
           />
-          <LocaleSwitcher
-            locale={locale}
-            locales={locales}
-            needsLocalePrefix={needsLocalePrefix}
-          />
+          <Suspense fallback={null}>
+            <LocaleSwitcher
+              locale={locale}
+              locales={locales}
+              needsLocalePrefix={needsLocalePrefix}
+            />
+          </Suspense>
           <ModeToggleClient />
         </div>
         <div className="flex items-center xl:hidden">
-          <LocaleSwitcher
-            locale={locale}
-            locales={locales}
-            needsLocalePrefix={needsLocalePrefix}
-          />
+          <Suspense fallback={null}>
+            <LocaleSwitcher
+              locale={locale}
+              locales={locales}
+              needsLocalePrefix={needsLocalePrefix}
+            />
+          </Suspense>
           <ModeToggleClient />
           <MobileNav
             locale={locale}

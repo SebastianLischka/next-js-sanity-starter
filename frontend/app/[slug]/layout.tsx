@@ -8,7 +8,7 @@ export async function generateStaticParams() {
     return [];
   }
 
-  return locales.map((lang) => ({ lang }));
+  return locales.map((slug) => ({ slug }));
 }
 
 export default function LocaleLayout({ children }: { children: ReactNode }) {

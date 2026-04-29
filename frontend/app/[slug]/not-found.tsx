@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default async function LocalizedNotFoundPage(props: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { lang } = await props.params;
-  const { locale } = await getResolvedLocale(lang);
+  const { slug } = await props.params;
+  const { locale } = await getResolvedLocale(slug);
 
   return (
     <>

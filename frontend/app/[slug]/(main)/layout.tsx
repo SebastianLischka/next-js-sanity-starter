@@ -10,10 +10,10 @@ export default async function LocalizedMainLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { lang } = await params;
-  const { locale, isValidLocale } = await getResolvedLocale(lang);
+  const { slug } = await params;
+  const { locale, isValidLocale } = await getResolvedLocale(slug);
   const { isEnabled: isDraftModeEnabled } = await draftMode();
 
   if (!isValidLocale) {

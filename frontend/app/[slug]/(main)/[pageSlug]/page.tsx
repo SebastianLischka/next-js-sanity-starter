@@ -16,13 +16,13 @@ export async function generateStaticParams() {
   }
 
   const paramsPerLocale = await Promise.all(
-    locales.map(async (lang) => {
-      const pages = await fetchSanityPagesStaticParams({ language: lang });
+    locales.map(async (localeSlug) => {
+      const pages = await fetchSanityPagesStaticParams({ language: localeSlug });
       return pages
         .filter((page) => Boolean(page.slug?.current))
         .map((page) => ({
-          lang,
-          slug: page.slug!.current!,
+          slug: localeSlug,
+          pageSlug: page.slug!.current!,
         }));
     }),
   );
@@ -31,17 +31,17 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ pageSlug: string; slug: string }>;
 }) {
-  const { slug, lang } = await props.params;
+  const { pageSlug, slug } = await props.params;
   const { locale, locales, needsLocalePrefix, isI18nOn, isValidLocale } =
-    await getResolvedLocale(lang);
+    await getResolvedLocale(slug);
 
   if (!isI18nOn || !isValidLocale) {
     notFound();
   }
 
-  const page = await fetchSanityPageBySlug({ slug, language: locale });
+  const page = await fetchSanityPageBySlug({ slug: pageSlug, language: locale });
 
   if (!page) {
     notFound();
@@ -49,7 +49,7 @@ export async function generateMetadata(props: {
 
   return generatePageMetadata({
     page,
-    slug,
+    slug: pageSlug,
     lang: locale,
     locales,
     needsLocalePrefix,
@@ -57,22 +57,22 @@ export async function generateMetadata(props: {
 }
 
 export default async function LocalizedPage(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ pageSlug: string; slug: string }>;
 }) {
-  const { slug, lang } = await props.params;
+  const { pageSlug, slug } = await props.params;
   const { locale, isI18nOn, isValidLocale, locales } = await getResolvedLocale(
-    lang,
+    slug,
   );
 
   if (!isI18nOn) {
-    redirect(stripLocalePrefix(`/${lang}/${slug}`, locales));
+    redirect(stripLocalePrefix(`/${slug}/${pageSlug}`, locales));
   }
 
   if (!isValidLocale) {
     notFound();
   }
 
-  const page = await fetchSanityPageBySlug({ slug, language: locale });
+  const page = await fetchSanityPageBySlug({ slug: pageSlug, language: locale });
 
   if (!page) {
     notFound();

@@ -23,13 +23,13 @@ export async function generateStaticParams() {
   }
 
   const paramsPerLocale = await Promise.all(
-    locales.map(async (lang) => {
-      const posts = await fetchSanityPostsStaticParams({ language: lang });
+    locales.map(async (localeSlug) => {
+      const posts = await fetchSanityPostsStaticParams({ language: localeSlug });
       return posts
         .filter((post) => Boolean(post.slug?.current))
         .map((post) => ({
-          lang,
-          slug: post.slug!.current!,
+          slug: localeSlug,
+          postSlug: post.slug!.current!,
         }));
     }),
   );
@@ -38,12 +38,12 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ postSlug: string; slug: string }>;
 }) {
-  const { slug, lang } = await props.params;
+  const { postSlug, slug } = await props.params;
   const { locale, locales, needsLocalePrefix, isI18nOn, isValidLocale } =
-    await getResolvedLocale(lang);
-  const post = await fetchSanityPostBySlug({ slug, language: locale });
+    await getResolvedLocale(slug);
+  const post = await fetchSanityPostBySlug({ slug: postSlug, language: locale });
 
   if (!isI18nOn || !isValidLocale || !post) {
     notFound();
@@ -51,7 +51,7 @@ export async function generateMetadata(props: {
 
   return generatePageMetadata({
     page: post,
-    slug: `blog/${slug}`,
+    slug: `blog/${postSlug}`,
     lang: locale,
     locales,
     needsLocalePrefix,
@@ -59,21 +59,21 @@ export async function generateMetadata(props: {
 }
 
 export default async function LocalizedPostPage(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ postSlug: string; slug: string }>;
 }) {
-  const { slug, lang } = await props.params;
+  const { postSlug, slug } = await props.params;
   const { locale, isI18nOn, isValidLocale, locales, needsLocalePrefix } =
-    await getResolvedLocale(lang);
+    await getResolvedLocale(slug);
 
   if (!isI18nOn) {
-    redirect(stripLocalePrefix(`/${lang}/blog/${slug}`, locales));
+    redirect(stripLocalePrefix(`/${slug}/blog/${postSlug}`, locales));
   }
 
   if (!isValidLocale) {
     notFound();
   }
 
-  const post = await fetchSanityPostBySlug({ slug, language: locale });
+  const post = await fetchSanityPostBySlug({ slug: postSlug, language: locale });
 
   if (!post) {
     notFound();
