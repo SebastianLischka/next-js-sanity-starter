@@ -19,7 +19,18 @@ import { formNewsletterQuery } from "./forms/newsletter";
 import { allPostsQuery } from "./all-posts";
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug && coalesce(language, $defaultLanguage) == $language][0]{
+  *[
+    _type == "page" &&
+    slug.current == $slug &&
+    (
+      language == $language ||
+      (!defined(language) && $language == $defaultLanguage)
+    )
+  ]
+  | order(
+      select(language == $language => 1, 0) desc,
+      _updatedAt desc
+    )[0]{
     "language": coalesce(language, $defaultLanguage),
     blocks[]{
       ${hero1Query},
@@ -44,4 +55,15 @@ export const PAGE_QUERY = groq`
   }
 `;
 
-export const PAGES_SLUGS_QUERY = groq`*[_type == "page" && defined(slug) && coalesce(language, $defaultLanguage) == $language]{slug}`;
+export const PAGES_SLUGS_QUERY = groq`
+  *[
+    _type == "page" &&
+    defined(slug) &&
+    (
+      language == $language ||
+      (!defined(language) && $language == $defaultLanguage)
+    )
+  ]{
+    slug
+  }
+`;
