@@ -35,6 +35,9 @@ export async function POST(request: NextRequest) {
   const slug = body?.slug?.current?.trim() ?? "";
   const locale = normalizeValue(body?.language);
 
+  // Global cache reset for the entire app tree to rule out path-level misses.
+  revalidatePath("/", "layout");
+
   // Always refresh global entry points that commonly depend on shared content.
   revalidatePath("/");
   revalidatePath(`/${DEFAULT_LOCALE}`);
