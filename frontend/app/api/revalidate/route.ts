@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { parseBody } from "next-sanity/webhook";
+import { DEFAULT_LOCALE } from "@/config/i18n";
 
 type RevalidateWebhookBody = {
   _type?: string;
@@ -11,6 +12,7 @@ type RevalidateWebhookBody = {
 };
 
 const GLOBAL_TYPES = new Set(["settings", "navigation"]);
+const normalizeValue = (value?: string) => value?.trim().toLowerCase() ?? "";
 
 export async function POST(request: NextRequest) {
   const secret = process.env.SANITY_REVALIDATE_SECRET;
@@ -29,15 +31,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Invalid signature" }, { status: 401 });
   }
 
-  const docType = body?._type ?? "";
-  const slug = body?.slug?.current ?? "";
-  const locale = body?.language ?? "";
+  const docType = normalizeValue(body?._type);
+  const slug = body?.slug?.current?.trim() ?? "";
+  const locale = normalizeValue(body?.language);
 
   // Always refresh global entry points that commonly depend on shared content.
   revalidatePath("/");
+  revalidatePath(`/${DEFAULT_LOCALE}`);
   revalidatePath("/blog");
+  revalidatePath(`/${DEFAULT_LOCALE}/blog`);
 
-  if (locale) {
+  if (locale && locale !== DEFAULT_LOCALE) {
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/blog`);
   }
@@ -52,7 +56,9 @@ export async function POST(request: NextRequest) {
 
   if (docType === "page" && slug) {
     if (slug === "index") {
-      if (locale) {
+      revalidatePath(`/${DEFAULT_LOCALE}`);
+
+      if (locale && locale !== DEFAULT_LOCALE) {
         revalidatePath(`/${locale}`);
       }
 
