@@ -14,6 +14,9 @@ if (!DEFAULT_LANGUAGE) {
 const untranslatedDocuments = await client.fetch(
   `*[_type in ["page","post"] && !defined(language)]{_id}`,
 );
+const settings = await client.fetch(
+  `*[_type == "settings"][0]{_id,supportedLanguages[]{_key,_type,id,title},defaultLanguage}`,
+);
 
 let transaction = client.transaction();
 
@@ -27,6 +30,7 @@ transaction = transaction.patch("settings", {
   setIfMissing: {
     supportedLanguages: [
       {
+        _key: "default-language",
         _type: "locale",
         id: DEFAULT_LANGUAGE,
         title: DEFAULT_LANGUAGE_TITLE,
@@ -35,6 +39,25 @@ transaction = transaction.patch("settings", {
     defaultLanguage: DEFAULT_LANGUAGE,
   },
 });
+
+if (settings?.supportedLanguages?.length) {
+  const normalizedLanguages = settings.supportedLanguages.map((locale, index) => ({
+    _key: locale._key || `${locale.id || "locale"}-${index + 1}`,
+    _type: locale._type || "locale",
+    id: locale.id,
+    title: locale.title,
+  }));
+
+  const hasMissingKeys = settings.supportedLanguages.some((locale) => !locale._key);
+
+  if (hasMissingKeys) {
+    transaction = transaction.patch("settings", {
+      set: {
+        supportedLanguages: normalizedLanguages,
+      },
+    });
+  }
+}
 
 if (untranslatedDocuments.length > 0) {
   const result = await transaction.commit();

@@ -18,3 +18,11 @@ export const DEFAULT_LOCALE = assertLocale(
   process.env.NEXT_PUBLIC_I18N_DEFAULT_LOCALE,
   "NEXT_PUBLIC_I18N_DEFAULT_LOCALE",
 );
+
+/**
+ * Frontend i18n master switch.
+ * - "false" => disable i18n behavior in frontend
+ * - any other value / undefined => enabled
+ */
+export const FRONTEND_I18N_ENABLED =
+  process.env.NEXT_PUBLIC_I18N_ENABLED !== "false";

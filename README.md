@@ -317,6 +317,7 @@ All environment variables and their descriptions:
 - `SANITY_STUDIO_DATASET` - your Sanity dataset name. For example, production.
 - `SANITY_STUDIO_DEFAULT_LANGUAGE` - default locale used by Studio i18n setup and bootstrap scripts (2-letter lowercase code, for example `de`).
 - `SANITY_STUDIO_DEFAULT_LANGUAGE_TITLE` - editor-facing label for the default language (for example `Deutsch`).
+- `SANITY_STUDIO_I18N_ENABLED` - toggles document translation features in Studio (`true`/`false`). Set to `false` to disable the document-internationalization plugin UI.
 - `SANITY_STUDIO_HOSTNAME` - your Sanity Studio hostname for `sanity deploy` (unique on `.sanity.studio`).
 - `SANITY_STUDIO_API_VERSION` - your Sanity API version (same guidance as above). For example: YYYY-MM-DD.
 - `SANITY_AUTH_TOKEN` - your Sanity auth token for Studio deploy via GitHub Actions. Generate in Sanity Manage → API → Tokens with deploy permission.

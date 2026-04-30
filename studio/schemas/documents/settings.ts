@@ -58,6 +58,7 @@ export default defineType({
       of: [{ type: "locale" }],
       initialValue: [
         {
+          _key: "default-language",
           _type: "locale",
           id: DEFAULT_LANGUAGE,
           title: DEFAULT_LANGUAGE_TITLE,

@@ -2,7 +2,7 @@ import { cache } from "react";
 import { sanityFetch } from "@/sanity/lib/live";
 import { SETTINGS_I18N_QUERY } from "@/sanity/queries/settings";
 import { normalizeLocaleId } from "./i18n-routing";
-import { DEFAULT_LOCALE } from "@/config/i18n";
+import { DEFAULT_LOCALE, FRONTEND_I18N_ENABLED } from "@/config/i18n";
 
 type LanguageOption = {
   id?: string | null;
@@ -42,13 +42,16 @@ export const getI18nConfig = cache(async () => {
   }
 
   const configuredDefault = normalizeLocaleId(settings?.defaultLanguage);
+  const hasMultipleLocales = uniqueLocales.length > 1;
+  const isI18nOn = FRONTEND_I18N_ENABLED && hasMultipleLocales;
+  const activeLocales = isI18nOn ? uniqueLocales : [DEFAULT_LOCALE];
 
   return {
-    locales: uniqueLocales,
+    locales: activeLocales,
     defaultLocale:
       configuredDefault === DEFAULT_LOCALE ? DEFAULT_LOCALE : DEFAULT_LOCALE,
-    isI18nOn: uniqueLocales.length > 1,
-    needsLocalePrefix: uniqueLocales.length > 1,
+    isI18nOn,
+    needsLocalePrefix: isI18nOn,
   };
 });
 
