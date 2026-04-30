@@ -2,20 +2,15 @@ import { groq } from "next-sanity";
 import { imageQuery } from "./shared/image";
 import { bodyQuery } from "./shared/body";
 import { metaQuery } from "./shared/meta";
+import { languageFilterQuery, languageOrderQuery } from "./shared/language";
 
 export const POST_QUERY = groq`
   *[
     _type == "post" &&
     slug.current == $slug &&
-    (
-      language == $language ||
-      (!defined(language) && $language == $defaultLanguage)
-    )
+    ${languageFilterQuery}
   ]
-  | order(
-      select(language == $language => 1, 0) desc,
-      _updatedAt desc
-    )[0]{
+  | order(${languageOrderQuery})[0]{
     "language": coalesce(language, $defaultLanguage),
     title,
     slug,
@@ -53,10 +48,7 @@ export const POSTS_QUERY = groq`
   *[
     _type == "post" &&
     defined(slug) &&
-    (
-      language == $language ||
-      (!defined(language) && $language == $defaultLanguage)
-    )
+    ${languageFilterQuery}
   ]
   | order(_createdAt desc){
     "language": coalesce(language, $defaultLanguage),
@@ -72,10 +64,7 @@ export const POSTS_SLUGS_QUERY = groq`
   *[
     _type == "post" &&
     defined(slug) &&
-    (
-      language == $language ||
-      (!defined(language) && $language == $defaultLanguage)
-    )
+    ${languageFilterQuery}
   ]{
     slug
   }

@@ -17,20 +17,15 @@ import { footer2Query } from "./footer/footer-2";
 import { faqsQuery } from "./faqs";
 import { formNewsletterQuery } from "./forms/newsletter";
 import { allPostsQuery } from "./all-posts";
+import { languageFilterQuery, languageOrderQuery } from "./shared/language";
 
 export const PAGE_QUERY = groq`
   *[
     _type == "page" &&
     slug.current == $slug &&
-    (
-      language == $language ||
-      (!defined(language) && $language == $defaultLanguage)
-    )
+    ${languageFilterQuery}
   ]
-  | order(
-      select(language == $language => 1, 0) desc,
-      _updatedAt desc
-    )[0]{
+  | order(${languageOrderQuery})[0]{
     "language": coalesce(language, $defaultLanguage),
     blocks[]{
       ${hero1Query},
@@ -59,10 +54,7 @@ export const PAGES_SLUGS_QUERY = groq`
   *[
     _type == "page" &&
     defined(slug) &&
-    (
-      language == $language ||
-      (!defined(language) && $language == $defaultLanguage)
-    )
+    ${languageFilterQuery}
   ]{
     slug
   }
