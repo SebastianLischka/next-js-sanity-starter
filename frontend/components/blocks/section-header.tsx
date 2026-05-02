@@ -18,6 +18,7 @@ export default function SectionHeader({
   description,
 }: SectionHeaderProps) {
   const isNarrow = sectionWidth === "narrow";
+  const isPrimary = colorVariant === "primary";
 
   return (
     <SectionContainer color={colorVariant} padding={padding}>
@@ -31,17 +32,41 @@ export default function SectionHeader({
       >
         <div
           className={cn(
-            colorVariant === "primary" ? "text-background" : undefined,
+            isPrimary ? "text-background" : undefined,
           )}
         >
           {tagLine && (
-            <h1 className="leading-[0] mb-4">
-              <span className="text-base font-semibold">{tagLine}</span>
-            </h1>
+            <div className={cn("mb-4", stackAlign === "center" ? "flex justify-center" : undefined)}>
+              <span
+                className={cn(
+                  "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-wide uppercase",
+                  isPrimary
+                    ? "bg-background/20 text-background"
+                    : "bg-primary/10 text-primary",
+                )}
+              >
+                {tagLine}
+              </span>
+            </div>
           )}
-          <h2 className="text-3xl md:text-5xl mb-4">{title}</h2>
+          <h2
+            className={cn(
+              "text-3xl md:text-5xl font-bold tracking-tight text-balance mb-4 leading-[1.1]",
+            )}
+          >
+            {title}
+          </h2>
         </div>
-        <p>{description}</p>
+        {description && (
+          <p
+            className={cn(
+              "text-base md:text-lg leading-relaxed",
+              isPrimary ? "text-background/80" : "text-muted-foreground",
+            )}
+          >
+            {description}
+          </p>
+        )}
       </div>
     </SectionContainer>
   );
